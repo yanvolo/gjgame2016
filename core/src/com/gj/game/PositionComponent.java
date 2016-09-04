@@ -1,6 +1,6 @@
 package com.gj.game;
 import com.badlogic.ashley.core.Component;
-import com.gj.game.Main.DIRECTION;
+import com.gj.game.Dungeon.DIRECTION;
 
 public class PositionComponent implements Component{
 

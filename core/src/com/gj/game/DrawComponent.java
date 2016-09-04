@@ -20,7 +20,7 @@ public class DrawComponent implements Component{
 			else System.out.println(ascii_draw);
 		}
 		if(drawmode ==1){
-			UI.GameFont.draw(b, ascii_draw, x, y);
+			UI.instance.GameFont.draw(b, ascii_draw, x, y);
 			//draw ascii art
 		}
 		

@@ -8,23 +8,22 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
 public class UI {
-
-	public static int Player_HP;
-	public static int Player_Mana;
+	public static UI instance;
 	
 	public static BitmapFont GameFont;
+	public String[] QuestLog;
+	public int LogLength;
 	
-	public static int LogLength;
-	public static String[] QuestLog;
 	public static void LogString(String s){
-		for(int i=LogLength-2;i>=0;i-=1){
-			QuestLog[i+1] = QuestLog[i];
+		for(int i=instance.LogLength-2;i>=0;i-=1){
+			instance.QuestLog[i+1] = instance.QuestLog[i];
 		}
-		QuestLog[0] = s;
+		instance.QuestLog[0] = s;
 	}
 	
 	
-	public static void Load(){
+	public UI(){
+		instance = this;
 		LogLength = 6;
 		QuestLog = new String[LogLength];
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("rsc/Consolas.ttf"));
@@ -35,8 +34,7 @@ public class UI {
 		generator.dispose();
 	}
 	
-	public static void Draw(SpriteBatch batch){
-		
+	public void Draw(SpriteBatch batch){
 		for(int i=0;i<LogLength;i++){
 			if(QuestLog[i]!= null)
 			GameFont.draw(batch, QuestLog[i],128,16+14*i);

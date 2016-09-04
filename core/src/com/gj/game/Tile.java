@@ -31,10 +31,6 @@ public class Tile {
 				case DOOR_LAST:{UI.GameFont.draw(b,"O", x, y);break;}
 				default:break;
 			}
-			
-			
 		}
-		
 	}
-	
 }
