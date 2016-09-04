@@ -245,5 +245,35 @@ public class Questionnaire {
 			}
 			return ret;
 		}
+		public boolean isCynical(){
+			return mutators[0];
+		}
+		public boolean isHoarder(){
+			return mutators[1];
+		}
+		public boolean isSelfDistrustful(){
+			return mutators[2];
+		}
+		public boolean isExternalizing(){
+			return mutators[3];
+		}
+		public boolean isGuarded(){
+			return mutators[4];
+		}
+		public boolean isIntense(){
+			return mutators[5];
+		}
+		public boolean isPast(){
+			return mutators[6];
+		}
+		public boolean isDaydreamer(){
+			return mutators[7];
+		}
+		public boolean isFatalist(){
+			return mutators[8];
+		}
+		public boolean isIndecisive(){
+			return mutators[9];
+		}
 
 }
