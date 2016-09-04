@@ -10,6 +10,8 @@ public static Texture playerSprite;
 	public Player(int xp,int yp){
 		this.add(new PositionComponent(xp,yp));
 		this.add(new DrawComponent(playerSprite,"P"));
+		CombatComponent combat = new CombatComponent("you",10,10,5,0,1,0);
+		this.add(combat);
 	}
 	
 	
@@ -19,13 +21,13 @@ public static Texture playerSprite;
 			if(r.Level[p.y*r.Width+p.x].type == Tile.TILE_TYPE.DOOR_DOWN){
 				d.Move_Room(DIRECTION.DOWN);
 			}
-			if(r.Level[p.y*r.Width+p.x].type == Tile.TILE_TYPE.DOOR_UP){
+			else if(r.Level[p.y*r.Width+p.x].type == Tile.TILE_TYPE.DOOR_UP){
 				d.Move_Room(DIRECTION.UP);
 			}
-			if(r.Level[p.y*r.Width+p.x].type == Tile.TILE_TYPE.DOOR_LEFT){
+			else if(r.Level[p.y*r.Width+p.x].type == Tile.TILE_TYPE.DOOR_LEFT){
 				d.Move_Room(DIRECTION.LEFT);
 			}
-			if(r.Level[p.y*r.Width+p.x].type == Tile.TILE_TYPE.DOOR_RIGHT){
+			else if(r.Level[p.y*r.Width+p.x].type == Tile.TILE_TYPE.DOOR_RIGHT){
 				d.Move_Room(DIRECTION.RIGHT);
 			}
 		}

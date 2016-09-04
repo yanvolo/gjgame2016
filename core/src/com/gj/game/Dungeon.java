@@ -21,7 +21,7 @@ public class Dungeon {
 		if(d==DIRECTION.UP){room_y--;}
 		
 		Entity player = current_room.Player;
-		current_room = new Room(0,32);//Is Cynical?
+		current_room = new Room(1,32);//Is Cynical?
 		current_room.Load("rsc/"+dungeon_rooms[room_y][room_x]);
 		current_room.Player = player;
 		PositionComponent p= player.getComponent(PositionComponent.class);
@@ -56,21 +56,22 @@ public class Dungeon {
 	
 	
 	public Dungeon(){
-		//@NOTE Order does matter here. Last item loaded will be drawn in front
-		//Walls and floors
-		Tile.tex_Floor0 = new Texture("rsc/floor0.png");
-		Tile.tex_Wall0 = new Texture("rsc/wall0.png");
-		//Last door
-		Tile.tex_FinalDoor = new Texture("rsc/doorLast.png");
-		//Doors
+		Player.playerSprite = new Texture("rsc/player.png");
+		EnemySlime.slimeSprite = new Texture("rsc/slime.png");
+		EnemyBat.batSprite = new Texture("rsc/bat.png");
+		EnemyRat.ratSprite = new Texture("rsc/rat.png");
+		EnemyArcher.archerSprite = new Texture("rsc/archer.png");
+		EnemyWarrior.warriorSprite = new Texture("rsc/warrior.png");
+		
+		ItemSign.signSprite = new Texture("rsc/sign.png");
+		ItemChest.chestSprite = new Texture("rsc/chest.png");
 		Tile.tex_DoorDown = new Texture("rsc/doorDown.png");
 		Tile.tex_DoorLeft = new Texture("rsc/doorLeft.png");
 		Tile.tex_DoorRight = new Texture("rsc/doorRight.png");
 		Tile.tex_DoorUp = new Texture("rsc/doorUp.png");
-		//Enemy Textures
-		EnemySlime.slimeSprites = new Texture("rsc/slime.gif");
-		//Misc
-		Player.playerSprite = new Texture("rsc/player.gif");
+		Tile.tex_FinalDoor = new Texture("rsc/doorLast.png");
+		Tile.tex_Floor0 = new Texture("rsc/floor0.png");
+		Tile.tex_Wall0 = new Texture("rsc/wall0.png");		
 		
 		room_x = 2;
 		room_y = 4;
@@ -86,7 +87,7 @@ public class Dungeon {
 	
 	public void LoadPostQuestionare(){
 		current_room = new Room(0,32);
-		current_room.Player = new Player(8,8);
+		current_room.Player = new Player(4,10);
 		current_room.Load("rsc/"+dungeon_rooms[room_y][room_x]);
 
 		/*change rules, dungeon rooms based on values.
@@ -98,10 +99,10 @@ public class Dungeon {
 	public void Update(){
 		PositionComponent p = current_room.Player.getComponent(PositionComponent.class);
 		if(p!= null){
-			if(Gdx.input.isKeyJustPressed(Keys.W)){p.Move(DIRECTION.UP,current_room);}
-			if(Gdx.input.isKeyJustPressed(Keys.A)){p.Move(DIRECTION.LEFT,current_room);}
-			if(Gdx.input.isKeyJustPressed(Keys.S)){p.Move(DIRECTION.DOWN,current_room);}
-			if(Gdx.input.isKeyJustPressed(Keys.D)){p.Move(DIRECTION.RIGHT,current_room);}
+			if(Gdx.input.isKeyJustPressed(Keys.W)){p.Move(current_room.Player,DIRECTION.UP,current_room);}
+			if(Gdx.input.isKeyJustPressed(Keys.A)){p.Move(current_room.Player,DIRECTION.LEFT,current_room);}
+			if(Gdx.input.isKeyJustPressed(Keys.S)){p.Move(current_room.Player,DIRECTION.DOWN,current_room);}
+			if(Gdx.input.isKeyJustPressed(Keys.D)){p.Move(current_room.Player,DIRECTION.RIGHT,current_room);}
 			((Player)current_room.Player).CheckChangeRoom(current_room,this);
 		}
 	}
@@ -120,7 +121,15 @@ public class Dungeon {
 	}
 	
 	public void dispose(){
-		EnemySlime.slimeSprites.dispose();
+		EnemySlime.slimeSprite.dispose();
+		EnemyBat.batSprite.dispose();
+		EnemyRat.ratSprite.dispose();
+		EnemyArcher.archerSprite.dispose();
+		EnemyWarrior.warriorSprite.dispose();
+		
+		ItemSign.signSprite.dispose();
+		ItemChest.chestSprite.dispose();
+		
 		Tile.tex_DoorDown.dispose();
 		Tile.tex_DoorLeft.dispose();
 		Tile.tex_DoorRight.dispose();

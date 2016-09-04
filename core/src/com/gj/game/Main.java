@@ -63,7 +63,7 @@ public class Main extends ApplicationAdapter {
 			/*Render Code*/
 			if(game_mode == game_mode.DUNGEON ||game_mode == game_mode.DEATH){
 				d.Render(batch, -(SCREEN_WIDTH/2),-(SCREEN_HEIGHT/2)-128);
-				ui.Draw(batch);
+				ui.Draw(batch,d.current_room);
 			}
 			else{
 				q.Render(batch, -(SCREEN_WIDTH/2),-(SCREEN_HEIGHT/2));

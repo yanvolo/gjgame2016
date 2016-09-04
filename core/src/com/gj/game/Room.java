@@ -27,22 +27,25 @@ public class Room {
 	}
 	
 	public void Load(String filename){
+		int sign_count =0;
 		File lvlfile = new File(filename);
 		if(lvlfile.exists()){
 			Entities = new ArrayList<Entity>();
 			try {
 				BufferedReader reader = new BufferedReader(new FileReader(lvlfile));
-			
+
 				String line = reader.readLine();
 					Width = Integer.parseInt(line);
 				line = reader.readLine();
 					Height = Integer.parseInt(line);
 				
 				Level = new Tile[Width*Height];
-					
+				System.out.println("NEW LEVEL:"+filename);
 				for(int i=0;i<Height;i++){
 					line = reader.readLine();
 					String[] tokens = line.split(" ");
+					for(String s:tokens){System.out.print(s+",");}
+					System.out.println();
 					for(int j=0;j<Width;j++){
 						Level[i*Width+j] =new Tile();
 						Tile tile = Level[i*Width+j];
@@ -75,13 +78,53 @@ public class Room {
 							tile.type = TILE_TYPE.DOOR_LAST;
 							tile.draw_tex = Tile.tex_FinalDoor;
 						}
-						else if(t.compareTo("E0")==0){
+						else if(t.compareTo("DS")==0){
+							tile.type = TILE_TYPE.WALL;
+							tile.draw_tex = Tile.tex_DoorUp;
+						}
+						else if(t.compareTo("ES")==0){
 							tile.type = TILE_TYPE.FLOOR;
 							tile.draw_tex = Tile.tex_Floor0;
-							Entities.add(new EnemySlime(i,j));
+							Entities.add(new EnemySlime(j,i));
+						}
+						else if(t.compareTo("EB")==0){
+							tile.type = TILE_TYPE.FLOOR;
+							tile.draw_tex = Tile.tex_Floor0;
+							Entities.add(new EnemyBat(j,i));
+						}
+						else if(t.compareTo("ER")==0){
+							tile.type = TILE_TYPE.FLOOR;
+							tile.draw_tex = Tile.tex_Floor0;
+							Entities.add(new EnemyRat(j,i));
+						}
+						else if(t.compareTo("EA")==0){
+							tile.type = TILE_TYPE.FLOOR;
+							tile.draw_tex = Tile.tex_Floor0;
+							Entities.add(new EnemyArcher(j,i));
+						}
+						else if(t.compareTo("EW")==0){
+							tile.type = TILE_TYPE.FLOOR;
+							tile.draw_tex = Tile.tex_Floor0;
+							Entities.add(new EnemyWarrior(j,i));
+						}
+						else if(t.compareTo("IC")==0){
+							tile.type = TILE_TYPE.FLOOR;
+							tile.draw_tex = Tile.tex_Floor0;
+							Entities.add(new ItemChest(j,i));
+						}
+						else if(t.compareTo("IS")==0){
+							tile.type = TILE_TYPE.FLOOR;
+							tile.draw_tex = Tile.tex_Floor0;
+							Entities.add(new ItemSign(j,i,sign_count));
+							sign_count++;
 						}
 					}
 				}
+				ItemSign.room_texts = new String[sign_count];
+				for(int i=0;i<sign_count;i++){
+					ItemSign.room_texts[i] = reader.readLine().replace("%n","\n");
+				}
+				
 				reader.close();	
 			} 
 			catch (Exception e) {e.printStackTrace();}
