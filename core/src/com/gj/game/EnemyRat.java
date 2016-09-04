@@ -14,4 +14,8 @@ public class EnemyRat extends Entity{
 		combat.AttackSkills.add(new SkillAttack());
 		this.add(combat);
 	}
+	public void OnTurn(Room r){
+		
+		
+	}
 }

@@ -53,7 +53,7 @@ public class Main extends ApplicationAdapter {
 			q.Update();
 		}
 		else if(game_mode == game_mode.DEATH){
-			if(Gdx.input.isKeyJustPressed(Keys.W)){game_mode = GameMode.QUESTIONNAIRE;}
+			if(Gdx.input.isKeyJustPressed(Keys.R)){game_mode = GameMode.QUESTIONNAIRE;}
 		}
 		
 		camera.update();
@@ -62,11 +62,11 @@ public class Main extends ApplicationAdapter {
 		batch.begin();
 			/*Render Code*/
 			if(game_mode == game_mode.DUNGEON ||game_mode == game_mode.DEATH){
-				d.Render(batch, -(SCREEN_WIDTH/2),-(SCREEN_HEIGHT/2)-128);
-				ui.Draw(batch,d.current_room);
+				d.Render(batch,SCREEN_WIDTH,SCREEN_HEIGHT);
+				ui.Draw(batch,d.current_room,SCREEN_WIDTH,SCREEN_HEIGHT);
 			}
 			else{
-				q.Render(batch, -(SCREEN_WIDTH/2),-(SCREEN_HEIGHT/2));
+				q.Render(batch,SCREEN_WIDTH,SCREEN_HEIGHT);
 			}
 		batch.end();
 	}

@@ -42,6 +42,30 @@ public class PositionComponent implements Component{
 		x=newx;y=newy;
 		return true;
 	}
+	public boolean Move(Entity ent,int dx,int dy,Room r){
+		int newx=x+dx;
+		int newy=y+dy;
+		
+		if(newy < 0 || newx < 0 || newy >= r.Height  || newx >= r.Width){return false;}//dont move out of bounds
+		if(r.Level[newy*r.Width+newx].type == Tile.TILE_TYPE.WALL){return false;}
+
+		for(Entity e:r.Entities){
+			PositionComponent cmp = e.getComponent(PositionComponent.class);
+			if(cmp != null && newx == cmp.x && newy == cmp.y){
+				if(e instanceof EnemyBat)return false;
+				if(e instanceof EnemyRat)return false;
+				if(e instanceof EnemyArcher)return false;
+				if(e instanceof EnemyWarrior)return false;
+				if(e instanceof ItemChest)return true;
+				if(e instanceof ItemSign && ent instanceof Player){
+					UI.LogString(ItemSign.room_texts[((ItemSign)e).signNo]);
+				}
+			}
+		}
+		
+		x=newx;y=newy;
+		return true;
+	}
 	
 	
 }

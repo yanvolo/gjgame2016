@@ -5,13 +5,28 @@ import com.badlogic.gdx.graphics.Texture;
 import com.gj.game.Dungeon.DIRECTION;
 
 public class Player extends Entity{
-public static Texture playerSprite;
+	public static Texture playerSprite;
 	
+	public int selected_skill;
+	public int num_hp_pots;
+	public int num_mana_pots;
+
 	public Player(int xp,int yp){
 		this.add(new PositionComponent(xp,yp));
 		this.add(new DrawComponent(playerSprite,"P"));
 		CombatComponent combat = new CombatComponent("you",10,10,5,0,1,0);
+		
+		combat.AttackSkills.add(new SkillAttack());//Attack-	1
+		combat.AttackSkills.add(new SkillGuard());//Guard-		2
+		combat.AttackSkills.add(new SkillFireball());//Fireball-	3
+		combat.AttackSkills.add(new SkillTeleport());//Teleport-	4
+		combat.AttackSkills.add(new SkillHealthPotion());//Health pot	6
+		combat.AttackSkills.add(new SkillManaPotion());//Mana pot	6
+		combat.AttackSkills.add(new SkillAttack());//Pickaxe	7
+		
 		this.add(combat);
+		num_hp_pots =1;
+		num_mana_pots =1;
 	}
 	
 	

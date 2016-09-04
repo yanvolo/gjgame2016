@@ -40,11 +40,9 @@ public class Room {
 					Height = Integer.parseInt(line);
 				
 				Level = new Tile[Width*Height];
-				System.out.println("NEW LEVEL:"+filename);
 				for(int i=0;i<Height;i++){
 					line = reader.readLine();
 					String[] tokens = line.split(" ");
-					for(String s:tokens){System.out.print(s+",");}
 					System.out.println();
 					for(int j=0;j<Width;j++){
 						Level[i*Width+j] =new Tile();
@@ -139,22 +137,32 @@ public class Room {
 	public void Draw(SpriteBatch batch,int cam_x,int cam_y){
 		for(int y=0;y<Height;y++){
 			for(int x=0;x<Width;x++){
-				Level[y*Width + x].Draw(batch, DRAW_MODE,TILE_SIZE*x -cam_x,-TILE_SIZE*y-cam_y);		
+				Level[y*Width + x].Draw(batch, DRAW_MODE,TILE_SIZE*x +cam_x,-TILE_SIZE*y+cam_y);		
 			}
 		}
 		for(Entity e:Entities){
 			PositionComponent pos = e.getComponent(PositionComponent.class);
 			DrawComponent draw = e.getComponent(DrawComponent.class);
 			if(pos != null && draw != null){
-				draw.Draw(batch, DRAW_MODE,TILE_SIZE*pos.x-cam_x,-TILE_SIZE*pos.y-cam_y);
+				draw.Draw(batch, DRAW_MODE,TILE_SIZE*pos.x+cam_x,-TILE_SIZE*pos.y+cam_y);
 			}
 		}
 		PositionComponent pos = Player.getComponent(PositionComponent.class);
 		DrawComponent draw = Player.getComponent(DrawComponent.class);
 		if(pos != null && draw != null){
-			draw.Draw(batch, DRAW_MODE,TILE_SIZE*pos.x-cam_x,-TILE_SIZE*pos.y-cam_y);
+			draw.Draw(batch, DRAW_MODE,TILE_SIZE*pos.x+cam_x,-TILE_SIZE*pos.y+cam_y);
 		}
 	}	
+
+	public void DoTurn(){
+		for(Entity e:Entities){
+			if(e instanceof EnemyArcher){((EnemyArcher) e).OnTurn(this);}
+			else if(e instanceof EnemyBat){((EnemyBat) e).OnTurn(this);}
+			else if(e instanceof EnemyRat){((EnemyRat) e).OnTurn(this);}
+			else if(e instanceof EnemySlime){((EnemySlime) e).OnTurn(this);}
+			else if(e instanceof EnemyWarrior){((EnemyWarrior) e).OnTurn(this);}
+		}	
+	}
 }
 	
 

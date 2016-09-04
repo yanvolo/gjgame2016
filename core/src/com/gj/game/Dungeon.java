@@ -1,5 +1,7 @@
 package com.gj.game;
 
+import java.util.Random;
+
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -21,7 +23,9 @@ public class Dungeon {
 		if(d==DIRECTION.UP){room_y--;}
 		
 		Entity player = current_room.Player;
-		current_room = new Room(1,32);//Is Cynical?
+		Random rand = new Random();
+		
+		current_room = (rand.nextBoolean())?new Room(0,32):new Room(1,16);//Is Cynical?
 		current_room.Load("rsc/"+dungeon_rooms[room_y][room_x]);
 		current_room.Player = player;
 		PositionComponent p= player.getComponent(PositionComponent.class);
@@ -97,24 +101,85 @@ public class Dungeon {
 	}
 	
 	public void Update(){
-		PositionComponent p = current_room.Player.getComponent(PositionComponent.class);
-		if(p!= null){
-			if(Gdx.input.isKeyJustPressed(Keys.W)){p.Move(current_room.Player,DIRECTION.UP,current_room);}
-			if(Gdx.input.isKeyJustPressed(Keys.A)){p.Move(current_room.Player,DIRECTION.LEFT,current_room);}
-			if(Gdx.input.isKeyJustPressed(Keys.S)){p.Move(current_room.Player,DIRECTION.DOWN,current_room);}
-			if(Gdx.input.isKeyJustPressed(Keys.D)){p.Move(current_room.Player,DIRECTION.RIGHT,current_room);}
+		Player player = (Player)current_room.Player;
+		PositionComponent p = player.getComponent(PositionComponent.class);
+		CombatComponent com = player.getComponent(CombatComponent.class);
+		if(p!= null && com != null){
+			if(Gdx.input.isKeyJustPressed(Keys.SPACE)){current_room.DoTurn();}
+			if(Gdx.input.isKeyJustPressed(Keys.ESCAPE)){player.selected_skill = 0;}
+			if(Gdx.input.isKeyJustPressed(Keys.NUM_1)){player.selected_skill = 1;}
+			if(Gdx.input.isKeyJustPressed(Keys.NUM_2)){//Guard,directionless
+				com.AttackSkills.get(1).OnUse(current_room, player, DIRECTION.UP);
+				player.selected_skill = 0;}
+			if(Gdx.input.isKeyJustPressed(Keys.NUM_3)){player.selected_skill = 3;}
+			if(Gdx.input.isKeyJustPressed(Keys.NUM_4)){player.selected_skill = 4;}
+			if(Gdx.input.isKeyJustPressed(Keys.NUM_5)){//HP potion,directionless
+				com.AttackSkills.get(4).OnUse(current_room, player, DIRECTION.UP);
+				player.selected_skill = 0;}
+			if(Gdx.input.isKeyJustPressed(Keys.NUM_6)){//Mana Potion,directionless
+				com.AttackSkills.get(5).OnUse(current_room, player, DIRECTION.UP);
+				player.selected_skill = 0;}
+			
+			if(Gdx.input.isKeyJustPressed(Keys.W)){
+					if(player.selected_skill==0){
+						p.Move(current_room.Player,DIRECTION.UP,current_room);
+						current_room.DoTurn();
+					}
+					else{
+						if(com.AttackSkills.get(player.selected_skill-1).OnUse(current_room, player, DIRECTION.UP)){
+							current_room.DoTurn();
+						}
+						player.selected_skill = 0;
+					}
+				}
+			if(Gdx.input.isKeyJustPressed(Keys.A)){
+				if(player.selected_skill==0){
+					p.Move(current_room.Player,DIRECTION.LEFT,current_room);
+					current_room.DoTurn();
+				}
+				else{
+					if(com.AttackSkills.get(player.selected_skill-1).OnUse(current_room, player, DIRECTION.LEFT)){
+						current_room.DoTurn();
+					}
+					player.selected_skill = 0;
+				}
+				}
+			if(Gdx.input.isKeyJustPressed(Keys.S)){
+				if(player.selected_skill==0){
+					p.Move(current_room.Player,DIRECTION.DOWN,current_room);
+					current_room.DoTurn();
+				}
+				else{
+					if(com.AttackSkills.get(player.selected_skill-1).OnUse(current_room, player, DIRECTION.DOWN)){
+						current_room.DoTurn();
+					}
+					player.selected_skill = 0;
+				}
+				}
+			if(Gdx.input.isKeyJustPressed(Keys.D)){
+				if(player.selected_skill==0){
+					p.Move(current_room.Player,DIRECTION.RIGHT,current_room);
+					current_room.DoTurn();
+				}
+				else{
+					if(com.AttackSkills.get(player.selected_skill-1).OnUse(current_room, player, DIRECTION.RIGHT)){
+						current_room.DoTurn();
+					}
+					player.selected_skill = 0;
+				}
+			}
 			((Player)current_room.Player).CheckChangeRoom(current_room,this);
 		}
 	}
 	
 	
-	public void Render(SpriteBatch batch,int x, int y){
-		int cam_x = x;//-(SCREEN_WIDTH/2) 
-		int cam_y = y;//-(SCREEN_HEIGHT/2)
+	public void Render(SpriteBatch batch,int w, int h){
+		int cam_x=0;
+		int cam_y=0;
 		PositionComponent p = current_room.Player.getComponent(PositionComponent.class);
 		if(p!= null){
-		cam_x += current_room.TILE_SIZE*p.x;
-		cam_y -= current_room.TILE_SIZE*p.y;
+		cam_x =  (w/2) -current_room.TILE_SIZE*p.x;
+		cam_y =  (h/2) +current_room.TILE_SIZE*p.y;
 		}
 		current_room.Draw(batch,cam_x,cam_y);
 		
