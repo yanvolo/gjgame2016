@@ -21,7 +21,7 @@ public class Dungeon {
 		if(d==DIRECTION.UP){room_y--;}
 		
 		Entity player = current_room.Player;
-		current_room = new Room(0,16);//Is Cynical?
+		current_room = new Room(0,32);//Is Cynical?
 		current_room.Load("rsc/"+dungeon_rooms[room_y][room_x]);
 		current_room.Player = player;
 		PositionComponent p= player.getComponent(PositionComponent.class);
@@ -56,15 +56,21 @@ public class Dungeon {
 	
 	
 	public Dungeon(){
-		Player.playerSprite = new Texture("rsc/player.png");
-		EnemySlime.slimeSprites = new Texture("rsc/slime.png");
+		//@NOTE Order does matter here. Last item loaded will be drawn in front
+		//Walls and floors
+		Tile.tex_Floor0 = new Texture("rsc/floor0.png");
+		Tile.tex_Wall0 = new Texture("rsc/wall0.png");
+		//Last door
+		Tile.tex_FinalDoor = new Texture("rsc/doorLast.png");
+		//Doors
 		Tile.tex_DoorDown = new Texture("rsc/doorDown.png");
 		Tile.tex_DoorLeft = new Texture("rsc/doorLeft.png");
 		Tile.tex_DoorRight = new Texture("rsc/doorRight.png");
 		Tile.tex_DoorUp = new Texture("rsc/doorUp.png");
-		Tile.tex_FinalDoor = new Texture("rsc/doorLast.png");
-		Tile.tex_Floor0 = new Texture("rsc/floor0.png");
-		Tile.tex_Wall0 = new Texture("rsc/wall0.png");		
+		//Enemy Textures
+		EnemySlime.slimeSprites = new Texture("rsc/slime.gif");
+		//Misc
+		Player.playerSprite = new Texture("rsc/player.gif");
 		
 		room_x = 2;
 		room_y = 4;
@@ -79,7 +85,7 @@ public class Dungeon {
 	}
 	
 	public void LoadPostQuestionare(){
-		current_room = new Room(0,16);
+		current_room = new Room(0,32);
 		current_room.Player = new Player(8,8);
 		current_room.Load("rsc/"+dungeon_rooms[room_y][room_x]);
 
