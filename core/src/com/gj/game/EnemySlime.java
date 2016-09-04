@@ -9,7 +9,7 @@ public class EnemySlime extends Entity{
 	
 	public EnemySlime(int xp,int yp){
 		this.add(new PositionComponent(xp,yp));
-		this.add(new DrawComponent(slimeSprites,'s'));
+		this.add(new DrawComponent(slimeSprites,"s"));
 		hp = 12;
 	}
 	

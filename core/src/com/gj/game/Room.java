@@ -20,7 +20,10 @@ public class Room {
 	public Tile[] 				Level;
 	public ArrayList<Entity> 	Entities;
 
-	
+	public Room(int DrawMode,int TileSize){
+		DRAW_MODE = DrawMode;
+		TILE_SIZE = TileSize;
+	}
 	
 	public void Load(String filename){
 		File lvlfile = new File(filename);
