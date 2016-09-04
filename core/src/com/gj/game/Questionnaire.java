@@ -11,7 +11,7 @@ public class Questionnaire {
 		
 		/*Update code goes here.*/
 		if(true/*finished with questionaire*/){
-			Main.SetGameMode(true);
+			Main.game_mode = Main.GameMode.DUNGEON_START;
 		}
 	}
 	public void dispose(){}

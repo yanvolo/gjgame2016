@@ -1,5 +1,6 @@
 package com.gj.game;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
@@ -8,7 +9,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class Dungeon {
 
 	public Room current_room;
-	public Player player;
 	public int room_x,room_y;
 	public String dungeon_rooms[][];
 	
@@ -20,9 +20,10 @@ public class Dungeon {
 		if(d==DIRECTION.DOWN){room_y++;}
 		if(d==DIRECTION.UP){room_y--;}
 		
+		Entity player = current_room.Player;
 		current_room = new Room(0,16);//Is Cynical?
 		current_room.Load("rsc/"+dungeon_rooms[room_y][room_x]);
-		current_room.Entities.add(player);
+		current_room.Player = player;
 		PositionComponent p= player.getComponent(PositionComponent.class);
 		if(p== null)return;
 		Tile.TILE_TYPE door =Tile.TILE_TYPE.FLOOR;
@@ -78,11 +79,10 @@ public class Dungeon {
 	}
 	
 	public void LoadPostQuestionare(){
-		player = new Player(8,8);
 		current_room = new Room(0,16);
+		current_room.Player = new Player(8,8);
 		current_room.Load("rsc/"+dungeon_rooms[room_y][room_x]);
-		current_room.Entities.add(player);
-		
+
 		/*change rules, dungeon rooms based on values.
 		 * 
 		 * */
@@ -90,13 +90,13 @@ public class Dungeon {
 	}
 	
 	public void Update(){
-		PositionComponent p = player.getComponent(PositionComponent.class);
+		PositionComponent p = current_room.Player.getComponent(PositionComponent.class);
 		if(p!= null){
 			if(Gdx.input.isKeyJustPressed(Keys.W)){p.Move(DIRECTION.UP,current_room);}
 			if(Gdx.input.isKeyJustPressed(Keys.A)){p.Move(DIRECTION.LEFT,current_room);}
 			if(Gdx.input.isKeyJustPressed(Keys.S)){p.Move(DIRECTION.DOWN,current_room);}
 			if(Gdx.input.isKeyJustPressed(Keys.D)){p.Move(DIRECTION.RIGHT,current_room);}
-			player.CheckChangeRoom(current_room,this);
+			((Player)current_room.Player).CheckChangeRoom(current_room,this);
 		}
 	}
 	
@@ -104,7 +104,7 @@ public class Dungeon {
 	public void Render(SpriteBatch batch,int x, int y){
 		int cam_x = x;//-(SCREEN_WIDTH/2) 
 		int cam_y = y;//-(SCREEN_HEIGHT/2)
-		PositionComponent p = player.getComponent(PositionComponent.class);
+		PositionComponent p = current_room.Player.getComponent(PositionComponent.class);
 		if(p!= null){
 		cam_x += current_room.TILE_SIZE*p.x;
 		cam_y -= current_room.TILE_SIZE*p.y;

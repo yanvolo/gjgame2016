@@ -19,6 +19,7 @@ public class Room {
 	
 	public Tile[] 				Level;
 	public ArrayList<Entity> 	Entities;
+	public Entity				Player;
 
 	public Room(int DrawMode,int TileSize){
 		DRAW_MODE = DrawMode;
@@ -104,6 +105,11 @@ public class Room {
 			if(pos != null && draw != null){
 				draw.Draw(batch, DRAW_MODE,TILE_SIZE*pos.x-cam_x,-TILE_SIZE*pos.y-cam_y);
 			}
+		}
+		PositionComponent pos = Player.getComponent(PositionComponent.class);
+		DrawComponent draw = Player.getComponent(DrawComponent.class);
+		if(pos != null && draw != null){
+			draw.Draw(batch, DRAW_MODE,TILE_SIZE*pos.x-cam_x,-TILE_SIZE*pos.y-cam_y);
 		}
 	}	
 }

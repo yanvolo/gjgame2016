@@ -2,6 +2,7 @@ package com.gj.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -17,13 +18,19 @@ public class Main extends ApplicationAdapter {
 	int SCREEN_HEIGHT = 400;
 	private OrthographicCamera camera;
 	
-	public static int game_mode;
-	//Enum GameMode{QUESTIONS=0,TRANSITIONING=1,DUNGEON=2}
-	public static void SetGameMode(boolean val){game_mode = (val)?1:0;}
+	public enum GameMode{
+		QUESTIONNAIRE,
+		DUNGEON_START,
+		DUNGEON,
+		DEATH,
+		WIN
+	}
+	
+	public static GameMode game_mode;
 	
 	@Override
 	public void create () {
-		game_mode = 0;
+		game_mode = GameMode.QUESTIONNAIRE;
 		batch = new SpriteBatch();
 		d = new Dungeon();
 		q = new Questionnaire();
@@ -35,15 +42,18 @@ public class Main extends ApplicationAdapter {
 	public void render () {
 
 		/*Update Logic*/
-		if(game_mode == 2){
+		if(game_mode == game_mode.DUNGEON){
 			d.Update();
 		}
-		else if(game_mode == 1){//Questionaire is over, load dungeon.
+		else if(game_mode == game_mode.DUNGEON_START){//Questionaire is over, load dungeon.
 			d.LoadPostQuestionare();
-			game_mode =2;
+			game_mode =game_mode.DUNGEON;
 		}
-		else{
+		else if(game_mode ==game_mode.QUESTIONNAIRE){
 			q.Update();
+		}
+		else if(game_mode == game_mode.DEATH){
+			if(Gdx.input.isKeyJustPressed(Keys.W)){game_mode = GameMode.QUESTIONNAIRE;}
 		}
 		
 		camera.update();
@@ -51,7 +61,7 @@ public class Main extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 			/*Render Code*/
-			if(game_mode == 2){
+			if(game_mode == game_mode.DUNGEON ||game_mode == game_mode.DEATH){
 				d.Render(batch, -(SCREEN_WIDTH/2),-(SCREEN_HEIGHT/2)-128);
 				ui.Draw(batch);
 			}
