@@ -135,7 +135,7 @@ public class Questionnaire {
 			"But that doesn’t make those ideas less destructive."
 		};
 		dialogueSections[7] = new String[]{
-			"I can see this can feel a hoke.",
+			"I can see this can feel a bit hoke.",
 			"That’s one way of looking at it.",
 			"But what if you looked again?",
 			"What do you see?"
@@ -180,7 +180,7 @@ public class Questionnaire {
 	private void stuffArrays(int index7, int index4, String[] arr7, String[] arr4,
 							   String firstString7, String secondString7, String String4){
 		arr7[index7] = firstString7;
-		arr7[index7] = secondString7;
+		arr7[index7+1] = secondString7;
 		arr4[index4] = String4;
 	}
 	public void Update(){
@@ -217,60 +217,70 @@ public class Questionnaire {
 							"Maybe you are a cynic.",
 							"Or maybe you just want a better world.",
 							"A bit of a cynic, are we? See people for their basest desires?");
+					index7++;
 				}
 				if(mutators[1]){
 					stuffArrays(index7++,index4++,part7,part4,
 							"Maybe you are just out there for the glory",
 							"Or maybe you just want to be the best you can be",
 							"A bit of a status seeker, I see? Stuck in the rat race?");
+					index7++;
 				}
 				if(mutators[2]){
 					stuffArrays(index7++,index4++,part7,part4,
 							"Maybe you feel that if you try, you will fail, but who doesn’t?",
 							"And surely, a little extra faith in yourself could change everything",
 							"Someone who lacks faith in themselves");
+					index7++;
 				}
 				if(mutators[3]){
 					stuffArrays(index7++,index4++,part7,part4,
 							"Maybe you think the world singles you out, but who doesn’t?",
 							"And surely you have the power to change that?",
 							"Someone who blames the unfair world");
+					index7++;
 				}
 				if(mutators[4]){
 					stuffArrays(index7++,index4++,part7,part4,
 							"Sure, you might feel isolated from the world",
 							"Or maybe you feel more lonely than you really are",
 							"A very guarded individual");
+					index7++;
 				}
 				if(mutators[5]){
 					stuffArrays(index7++,index4++,part7,part4,
 							"Sure, it might feel the world will leave you behind",
 							"Or maybe you feel more abandoned than you really are",
 							"A very clingy individual");
+					index7++;
 				}
 				if(mutators[6]){
 					stuffArrays(index7++,index4++,part7,part4,
 							"Sometimes you reminisce too much.",
 							"But every great story is built on what came before.",
 							"Stuck in the past");
+					index7++;
 				}
 				if(mutators[7]){
 					stuffArrays(index7++,index4++,part7,part4,
 							"Sometimes you daydream too much",
 							"But every great story starts with a dream",
 							"Stuck daydreaming");
+					index7++;
 				}
 				if(mutators[8]){
 					stuffArrays(index7++,index4++,part7,part4,
 							"And finally, maybe you feel stuck",
 							"But that just means there is opportunity you have failed to see",
 							"And worst of all, there’s just not a lot of options out there");
+					index7++;
 				}
 				if(mutators[9]){
 					stuffArrays(index7++,index4++,part7,part4,
 							"And finally, maybe you feel overwhelmed",
 							"But that just means you have been thoughtful about your choices.",
 							"And worst of all, there’s just too many options out there");
+					index7++;
 				}
 				part4[index4++] = "What do you see?";
 				dialogueSections[3] = part4;
@@ -317,12 +327,14 @@ public class Questionnaire {
 				switch (dialogueSectionNumber){
 					case 4:
 					case 5:
-					case 8:
 					case 9:
 						currentSection= Section.DONE;
+						break;
 					case 3:
 						currentSection = Section.QUESTIONING;
 						break;
+					case 8:
+						System.exit(0);
 					case 1:
 					case 2:
 					case 6:
@@ -334,6 +346,7 @@ public class Questionnaire {
 		}
 		else if(currentSection == Section.DONE){
 			Main.game_mode = Main.GameMode.DUNGEON_START;
+			currentSection = Section.CHATTING;
 		}
 	}
 	public void dispose(){
