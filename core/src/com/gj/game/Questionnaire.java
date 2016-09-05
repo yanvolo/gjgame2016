@@ -179,9 +179,9 @@ public class Questionnaire {
 	}
 	private void stuffArrays(int index7, int index4, String[] arr7, String[] arr4,
 							   String firstString7, String secondString7, String String4){
-		arr7[index7++] = firstString7;
-		arr7[index7++] = secondString7;
-		arr4[index4++] = String4;
+		arr7[index7] = firstString7;
+		arr7[index7] = secondString7;
+		arr4[index4] = String4;
 	}
 	public void Update(){
 		if(currentSection == Section.CALCULATING){
@@ -194,6 +194,12 @@ public class Questionnaire {
 				}
 			}
 			if(answerCount==0){
+				questionIndex = 0;
+				currentSection = Section.QUESTIONING;
+				dialogueSections[2] = new String[]{
+					"Come on, I need something to work with here",
+					"Look at these questions again, and think real hard about an answer this time"
+				};
 
 			}
 			else{
@@ -207,61 +213,61 @@ public class Questionnaire {
 				part7[index7++] = "Perhaps you agreed with some of the things I said";
 				part7[index7++] = "If that’s the case, then think about this";
 				if(mutators[0]){
-					stuffArrays(index7,index4,part7,part4,
+					stuffArrays(index7++,index4++,part7,part4,
 							"Maybe you are a cynic.",
 							"Or maybe you just want a better world.",
 							"A bit of a cynic, are we? See people for their basest desires?");
 				}
 				if(mutators[1]){
-					stuffArrays(index7,index4,part7,part4,
+					stuffArrays(index7++,index4++,part7,part4,
 							"Maybe you are just out there for the glory",
 							"Or maybe you just want to be the best you can be",
 							"A bit of a status seeker, I see? Stuck in the rat race?");
 				}
 				if(mutators[2]){
-					stuffArrays(index7,index4,part7,part4,
+					stuffArrays(index7++,index4++,part7,part4,
 							"Maybe you feel that if you try, you will fail, but who doesn’t?",
 							"And surely, a little extra faith in yourself could change everything",
 							"Someone who lacks faith in themselves");
 				}
 				if(mutators[3]){
-					stuffArrays(index7,index4,part7,part4,
+					stuffArrays(index7++,index4++,part7,part4,
 							"Maybe you think the world singles you out, but who doesn’t?",
 							"And surely you have the power to change that?",
 							"Someone who blames the unfair world");
 				}
 				if(mutators[4]){
-					stuffArrays(index7,index4,part7,part4,
+					stuffArrays(index7++,index4++,part7,part4,
 							"Sure, you might feel isolated from the world",
 							"Or maybe you feel more lonely than you really are",
 							"A very guarded individual");
 				}
 				if(mutators[5]){
-					stuffArrays(index7,index4,part7,part4,
+					stuffArrays(index7++,index4++,part7,part4,
 							"Sure, it might feel the world will leave you behind",
 							"Or maybe you feel more abandoned than you really are",
 							"A very clingy individual");
 				}
 				if(mutators[6]){
-					stuffArrays(index7,index4,part7,part4,
+					stuffArrays(index7++,index4++,part7,part4,
 							"Sometimes you reminisce too much.",
 							"But every great story is built on what came before.",
 							"Stuck in the past");
 				}
 				if(mutators[7]){
-					stuffArrays(index7,index4,part7,part4,
+					stuffArrays(index7++,index4++,part7,part4,
 							"Sometimes you daydream too much",
 							"But every great story starts with a dream",
 							"Stuck daydreaming");
 				}
 				if(mutators[8]){
-					stuffArrays(index7,index4,part7,part4,
+					stuffArrays(index7++,index4++,part7,part4,
 							"And finally, maybe you feel stuck",
 							"But that just means there is opportunity you have failed to see",
 							"And worst of all, there’s just not a lot of options out there");
 				}
 				if(mutators[9]){
-					stuffArrays(index7,index4,part7,part4,
+					stuffArrays(index7++,index4++,part7,part4,
 							"And finally, maybe you feel overwhelmed",
 							"But that just means you have been thoughtful about your choices.",
 							"And worst of all, there’s just too many options out there");
@@ -269,8 +275,12 @@ public class Questionnaire {
 				part4[index4++] = "What do you see?";
 				dialogueSections[3] = part4;
 				dialogueSections[6] = part7;
+				currentSection = Section.CHATTING;
+				dialogueSectionNumber = 3;
+				System.out.println(Arrays.toString(mutators));
+				System.out.println(Arrays.toString(dialogueSections[3]));
 			}
-			currentSection = Section.CHATTING;
+
 		}
 		/*Update code goes here.*/
 		if(currentSection == Section.QUESTIONING){
@@ -299,9 +309,11 @@ public class Questionnaire {
 		}
 		else if(currentSection == Section.CHATTING && Gdx.input.isKeyJustPressed(Input.Keys.ENTER)){
 			dialogueIndex++;
+			System.out.println("Dialogue Index: "+ dialogueIndex);
 			if(dialogueIndex> dialogueSections[dialogueSectionNumber].length){
 				dialogueIndex = 1;
 				dialogueSectionNumber++;
+				System.out.println("Section Number: "+ dialogueSectionNumber);
 				switch (dialogueSectionNumber){
 					case 4:
 					case 5:
@@ -317,14 +329,6 @@ public class Questionnaire {
 					case 7:
 					default:
 						break;
-				}
-				if(dialogueSectionNumber==2){
-
-				}
-				if(dialogueSectionNumber==4 ||
-					dialogueSectionNumber==5 ||
-						dialogueSectionNumber==6){
-					currentSection = Section.DONE;
 				}
 			}
 		}
