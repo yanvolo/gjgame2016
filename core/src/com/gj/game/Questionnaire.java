@@ -15,6 +15,7 @@ import java.util.Arrays;
 public class Questionnaire {
 
 	//GDX Tools
+	public static Questionnaire instance;
 	public SpriteBatch batch;
 	public BitmapFont questionFont;
 	//Useful Screen Constants
@@ -68,6 +69,8 @@ public class Questionnaire {
 	}
 	public Questionnaire(){
 		//Prep GDX Stuff
+		mutators  = new boolean[10];
+		instance = this;
 		questionFont = new BitmapFont();
 		questionFont.setColor(Color.WHITE);
 		batch = new SpriteBatch();

@@ -1,5 +1,7 @@
 package com.gj.game;
 
+import java.util.Random;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -17,7 +19,6 @@ public class UI {
 	public static Texture	hpFull;
 	public static Texture	manaEmpty;
 	public static Texture	manaFull;
-	public static Texture 	directions;
 	
 	
 	public static BitmapFont GameFont;
@@ -43,7 +44,6 @@ public class UI {
 		hpFull = new Texture("rsc/hpFull.png");
 		manaEmpty = new Texture("rsc/manaEmpty.png");
 		manaFull = new Texture("rsc/manaFull.png");
-		directions= new Texture("rsc/directions.png");
 		
 		LogLength = 4;
 		QuestLog = new String[LogLength];
@@ -58,34 +58,48 @@ public class UI {
 	public void Draw(SpriteBatch batch, Room r,int w, int h){
 		CombatComponent c = r.Player.getComponent(CombatComponent.class);
 		PositionComponent p = r.Player.getComponent(PositionComponent.class);
+		Random rand = new Random();
 		if(c != null){
 			if(r.DRAW_MODE == 0){
 				//If externalizing....
+				int mhp = c.MaxHP;
+				int chp = c.HP;
+				int mmn = c.MaxMana;
+				int cmn = c.Mana;
+				if(Questionnaire.instance.isExternalizing()){
+					chp = rand.nextInt(20);
+					mhp = chp+rand.nextInt(20);
+					cmn = rand.nextInt(20);
+					mmn = cmn+rand.nextInt(20);
+				}
+				
 				int hp =0;
-				for(hp=0;hp<c.HP;hp++){batch.draw(hpFull,90+4*hp,90);}
-				while(hp<c.MaxHP){batch.draw(hpEmpty,90+4*hp,90);hp++;}
+				for(hp=0;hp<chp;hp++){batch.draw(hpFull,90+4*hp,90);}
+				while(hp<mhp){batch.draw(hpEmpty,90+4*hp,90);hp++;}
 				int mana =0;
-				for(mana=0;mana<c.Mana;mana++){batch.draw(manaFull,90+4*mana,72);}
-				while(mana<c.MaxMana){batch.draw(manaEmpty,90+4*mana,72);mana++;}
+				for(mana=0;mana<cmn;mana++){batch.draw(manaFull,90+4*mana,72);}
+				while(mana<mmn){batch.draw(manaEmpty,90+4*mana,72);mana++;}
 			}
 			else if(r.DRAW_MODE == 1){
-				GameFont.draw(batch,"HP:"+c.HP+"/"+c.MaxHP,90,102);
-				GameFont.draw(batch,"Mana:"+c.Mana+"/"+c.MaxMana,90,86);
-			}
-		}
-		if(((Player)r.Player).selected_skill != 0){
-			if(r.DRAW_MODE == 0){
-				if(p != null){
-					batch.draw(directions,(w/2)-r.TILE_SIZE,(h/2)-r.TILE_SIZE);
-				}	
-			}
-			else if(r.DRAW_MODE == 1){
-				GameFont.draw(batch," ^",(w/2)-r.TILE_SIZE/2,(h/2)+r.TILE_SIZE);
-				GameFont.draw(batch,"< >",(w/2)-r.TILE_SIZE/2,(h/2));
-				GameFont.draw(batch," v",(w/2)-r.TILE_SIZE/2,(h/2)-r.TILE_SIZE);
+
+				if(Questionnaire.instance.isExternalizing()){
+					GameFont.draw(batch,"HP:"+rand.nextInt(20)+"/"+rand.nextInt(20),90,102);
+					GameFont.draw(batch,"Mana:"+rand.nextInt(20)+"/"+rand.nextInt(20),90,86);
+				}
+				else{
+					GameFont.draw(batch,"HP:"+c.HP+"/"+c.MaxHP,90,102);
+					GameFont.draw(batch,"Mana:"+c.Mana+"/"+c.MaxMana,90,86);
+					
+				}
 			}
 		}
 
+		Questionnaire.instance.isHoarder();
+		Questionnaire.instance.isFatalist();
+		
+		Questionnaire.instance.isGuarded();
+		Questionnaire.instance.isIntense();
+		
 		if(r.DRAW_MODE == 0){
 			batch.draw(menubar,256,72);
 		}

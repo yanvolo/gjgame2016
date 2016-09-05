@@ -14,8 +14,8 @@ public class Main extends ApplicationAdapter {
 	Questionnaire q;
 	UI	ui;
 	
-	int SCREEN_WIDTH = 600;
-	int SCREEN_HEIGHT = 400;
+	int SCREEN_WIDTH = 800;
+	int SCREEN_HEIGHT = 600;
 	private OrthographicCamera camera;
 	
 	public enum GameMode{
@@ -30,10 +30,10 @@ public class Main extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
-		game_mode = GameMode.QUESTIONNAIRE;
+		game_mode = GameMode.DUNGEON_START;
 		batch = new SpriteBatch();
-		d = new Dungeon();
 		q = new Questionnaire();
+		d = new Dungeon();
 		ui = new UI();
 		camera = new OrthographicCamera(SCREEN_WIDTH,SCREEN_HEIGHT);
 	}
@@ -46,14 +46,17 @@ public class Main extends ApplicationAdapter {
 			d.Update();
 		}
 		else if(game_mode == game_mode.DUNGEON_START){//Questionaire is over, load dungeon.
-			d.LoadPostQuestionare();
+			d.LoadPostQuestionnaire();
 			game_mode =game_mode.DUNGEON;
 		}
 		else if(game_mode ==game_mode.QUESTIONNAIRE){
 			q.Update();
 		}
 		else if(game_mode == game_mode.DEATH){
-			if(Gdx.input.isKeyJustPressed(Keys.W)){game_mode = GameMode.QUESTIONNAIRE;}
+			if(Gdx.input.isKeyJustPressed(Keys.R)){game_mode = GameMode.DUNGEON_START;}
+		}
+		else if(game_mode == game_mode.WIN){
+			if(Gdx.input.isKeyJustPressed(Keys.R)){game_mode = GameMode.QUESTIONNAIRE;}
 		}
 		
 		camera.update();
@@ -61,11 +64,11 @@ public class Main extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 			/*Render Code*/
-			if(game_mode == game_mode.DUNGEON ||game_mode == game_mode.DEATH){
-				d.Render(batch, -(SCREEN_WIDTH/2),-(SCREEN_HEIGHT/2)-128);
-				ui.Draw(batch);
+			if(game_mode == game_mode.DUNGEON ||game_mode == game_mode.DEATH||game_mode == game_mode.WIN){
+				d.Render(batch,SCREEN_WIDTH,SCREEN_HEIGHT);
+				ui.Draw(batch,d.current_room, SCREEN_WIDTH, SCREEN_HEIGHT);
 			}
-			else{
+			else if(game_mode == game_mode.QUESTIONNAIRE){
 				q.Render(batch, (SCREEN_WIDTH/2),(SCREEN_HEIGHT/2));
 			}
 		batch.end();

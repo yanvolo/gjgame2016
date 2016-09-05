@@ -43,7 +43,7 @@ public class CombatComponent implements Component{
 					UI.LogString(Name+" takes " +dmg+" damage");
 				}
 				
-				if(HP < 0){Die(me,r);}
+				if(HP <= 0){Die(me,r);}
 			}
 			else{
 				if(me instanceof Player){
@@ -63,7 +63,7 @@ public class CombatComponent implements Component{
 				UI.LogString(Name+" takes " +dmg+" damage");
 			}
 			
-			if(HP < 0){Die(me,r);}
+			if(HP <= 0){Die(me,r);}
 		}
 	}
 	

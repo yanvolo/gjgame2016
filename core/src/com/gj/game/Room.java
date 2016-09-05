@@ -21,6 +21,9 @@ public class Room {
 	public ArrayList<Entity> 	Entities;
 	public Entity				Player;
 
+	public static Texture 	directions;
+	
+
 	public Room(int DrawMode,int TileSize){
 		DRAW_MODE = DrawMode;
 		TILE_SIZE = TileSize;
@@ -39,11 +42,11 @@ public class Room {
 				line = reader.readLine();
 					Height = Integer.parseInt(line);
 				
+					//System.out.println(filename +": "+Width+","+Height);
 				Level = new Tile[Width*Height];
 				for(int i=0;i<Height;i++){
 					line = reader.readLine();
 					String[] tokens = line.split(" ");
-					System.out.println();
 					for(int j=0;j<Width;j++){
 						Level[i*Width+j] =new Tile();
 						Tile tile = Level[i*Width+j];
@@ -83,7 +86,12 @@ public class Room {
 						else if(t.compareTo("ES")==0){
 							tile.type = TILE_TYPE.FLOOR;
 							tile.draw_tex = Tile.tex_Floor0;
-							Entities.add(new EnemySlime(j,i));
+							Entities.add(new EnemySlime(j,i,true));
+						}
+						else if(t.compareTo("Es")==0){
+							tile.type = TILE_TYPE.FLOOR;
+							tile.draw_tex = Tile.tex_Floor0;
+							Entities.add(new EnemySlime(j,i,false));
 						}
 						else if(t.compareTo("EB")==0){
 							tile.type = TILE_TYPE.FLOOR;
@@ -116,6 +124,11 @@ public class Room {
 							Entities.add(new ItemSign(j,i,sign_count));
 							sign_count++;
 						}
+						else if(t.compareTo("IW")==0){
+							tile.type = TILE_TYPE.FLOOR;
+							tile.draw_tex = Tile.tex_Floor0;
+							Entities.add(new ItemGameWin(j,i));
+						}
 					}
 				}
 				ItemSign.room_texts = new String[sign_count];
@@ -126,12 +139,8 @@ public class Room {
 				reader.close();	
 			} 
 			catch (Exception e) {e.printStackTrace();}
-			
-			
-			
+			Entities.add(Player);
 		}
-		
-		
 	}
 	
 	public void Draw(SpriteBatch batch,int cam_x,int cam_y){
@@ -144,18 +153,49 @@ public class Room {
 			PositionComponent pos = e.getComponent(PositionComponent.class);
 			DrawComponent draw = e.getComponent(DrawComponent.class);
 			if(pos != null && draw != null){
-				draw.Draw(batch, DRAW_MODE,TILE_SIZE*pos.x+cam_x,-TILE_SIZE*pos.y+cam_y);
+				if(Questionnaire.instance.isPast()){
+					 draw.Draw(batch, DRAW_MODE,TILE_SIZE*pos.past_x+cam_x,-TILE_SIZE*pos.past_y+cam_y);
+				}
+				else if(Questionnaire.instance.isDaydreamer()){
+					 draw.Draw(batch, DRAW_MODE,TILE_SIZE*pos.future_x+cam_x,-TILE_SIZE*pos.future_x+cam_y);
+				}
+				else draw.Draw(batch, DRAW_MODE,TILE_SIZE*pos.x+cam_x,-TILE_SIZE*pos.y+cam_y);
 			}
 		}
 		PositionComponent pos = Player.getComponent(PositionComponent.class);
-		DrawComponent draw = Player.getComponent(DrawComponent.class);
-		if(pos != null && draw != null){
-			draw.Draw(batch, DRAW_MODE,TILE_SIZE*pos.x+cam_x,-TILE_SIZE*pos.y+cam_y);
+		if(((Player)Player).selected_skill != 0 && pos != null){
+			if(DRAW_MODE == 0){
+				if(Questionnaire.instance.isPast()){
+					batch.draw(directions,TILE_SIZE*pos.past_x+cam_x-TILE_SIZE,-TILE_SIZE*pos.past_y+cam_y-TILE_SIZE);
+				}
+				else if(Questionnaire.instance.isDaydreamer()){
+					batch.draw(directions,TILE_SIZE*pos.future_x+cam_x-TILE_SIZE,-TILE_SIZE*pos.future_y+cam_y-TILE_SIZE);
+				}
+				else batch.draw(directions,TILE_SIZE*pos.x+cam_x-TILE_SIZE,-TILE_SIZE*pos.y+cam_y-TILE_SIZE);
+			}
+			else if(DRAW_MODE == 1){
+				if(Questionnaire.instance.isPast()){
+					UI.GameFont.draw(batch," ^", TILE_SIZE*pos.past_x+cam_x-TILE_SIZE,-TILE_SIZE*pos.past_y+cam_y+TILE_SIZE);
+					UI.GameFont.draw(batch,"< >",TILE_SIZE*pos.past_x+cam_x-TILE_SIZE,-TILE_SIZE*pos.past_y+cam_y);
+					UI.GameFont.draw(batch," v", TILE_SIZE*pos.past_x+cam_x-TILE_SIZE,-TILE_SIZE*pos.past_y+cam_y-TILE_SIZE);
+				}
+				else if(Questionnaire.instance.isDaydreamer()){
+					UI.GameFont.draw(batch," ^", TILE_SIZE*pos.future_x+cam_x-TILE_SIZE,-TILE_SIZE*pos.future_y+cam_y+TILE_SIZE);
+					UI.GameFont.draw(batch,"< >",TILE_SIZE*pos.future_x+cam_x-TILE_SIZE,-TILE_SIZE*pos.future_y+cam_y);
+					UI.GameFont.draw(batch," v", TILE_SIZE*pos.future_x+cam_x-TILE_SIZE,-TILE_SIZE*pos.future_y+cam_y-TILE_SIZE);
+				}
+				else{
+					UI.GameFont.draw(batch," ^", TILE_SIZE*pos.x+cam_x-TILE_SIZE,-TILE_SIZE*pos.y+cam_y+TILE_SIZE);
+					UI.GameFont.draw(batch,"< >",TILE_SIZE*pos.x+cam_x-TILE_SIZE,-TILE_SIZE*pos.y+cam_y);
+					UI.GameFont.draw(batch," v", TILE_SIZE*pos.x+cam_x-TILE_SIZE,-TILE_SIZE*pos.y+cam_y-TILE_SIZE);
+				}
+			}
 		}
 	}	
 
 	public void DoTurn(){
-		for(Entity e:Entities){
+		for(int i=0;i<Entities.size();i++){
+			Entity e = Entities.get(i);
 			if(e instanceof EnemyArcher){((EnemyArcher) e).OnTurn(this);}
 			else if(e instanceof EnemyBat){((EnemyBat) e).OnTurn(this);}
 			else if(e instanceof EnemyRat){((EnemyRat) e).OnTurn(this);}

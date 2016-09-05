@@ -17,8 +17,6 @@ public class SkillAttack implements Skill{
 			if(dir == Dungeon.DIRECTION.LEFT){tar_x--;}
 			if(dir == Dungeon.DIRECTION.RIGHT){tar_x++;}
 
-			
-			
 			for(Entity e:r.Entities){
 				PositionComponent tar_pos = e.getComponent(PositionComponent.class);
 				CombatComponent tar_com = e.getComponent(CombatComponent.class);
@@ -32,7 +30,7 @@ public class SkillAttack implements Skill{
 						}
 						
 						Random rand= new Random();
-						int d20 = 1+Math.abs(rand.nextInt())%20;
+						int d20 = rand.nextInt(21);
 						int dmg = usr_com.AttackPower;
 						if(d20 == 20){
 							dmg += 5;
@@ -44,14 +42,30 @@ public class SkillAttack implements Skill{
 						else if(d20 < 5){
 							dmg-=1;
 						}
+						else if(d20 == 0){
+							UI.LogString("MISS");
+							return true;
+						}
 						
+						if(user instanceof Player && Questionnaire.instance.isSelfDistrustful()){
+							if(rand.nextInt(2)==0){
+								UI.LogString("You lack faith in yourself. MISS");
+								return true;							
+							}
+						}
 						tar_com.DoDamage(e,r,dmg,false);
 						
 						return true;}
 				}	
 			}
 		}
-		return false;
+		if(user instanceof Player){
+			UI.LogString("You swing your sword at nothing");
+		}
+		else{
+			UI.LogString(usr_com.Name+" attacks at nothing");
+		}
+		return true;
 	}
 
 

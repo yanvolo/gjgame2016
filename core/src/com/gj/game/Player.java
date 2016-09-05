@@ -10,6 +10,7 @@ public class Player extends Entity{
 	public int selected_skill;
 	public int num_hp_pots;
 	public int num_mana_pots;
+	public int num_loot;
 
 	public Player(int xp,int yp){
 		this.add(new PositionComponent(xp,yp));
@@ -27,6 +28,7 @@ public class Player extends Entity{
 		this.add(combat);
 		num_hp_pots =1;
 		num_mana_pots =1;
+		num_loot=0;
 	}
 	
 	
@@ -44,6 +46,11 @@ public class Player extends Entity{
 			}
 			else if(r.Level[p.y*r.Width+p.x].type == Tile.TILE_TYPE.DOOR_RIGHT){
 				d.Move_Room(DIRECTION.RIGHT);
+			}
+			else if(r.Level[p.y*r.Width+p.x].type == Tile.TILE_TYPE.DOOR_LAST){
+				//if(not boss)
+				d.Set_Room(4, 3);
+				//else d.Set_Room(4, 4);
 			}
 		}
 	}

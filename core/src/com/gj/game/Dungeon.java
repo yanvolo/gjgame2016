@@ -25,10 +25,21 @@ public class Dungeon {
 		Entity player = current_room.Player;
 		Random rand = new Random();
 		
-		current_room = (rand.nextBoolean())?new Room(0,32):new Room(1,16);//Is Cynical?
-		current_room.Load("rsc/"+dungeon_rooms[room_y][room_x]);
+		Questionnaire.instance.isIntense();
+		Questionnaire.instance.isHoarder();
+		Questionnaire.instance.isGuarded();
+		Questionnaire.instance.isFatalist();
+		
+		current_room = (Questionnaire.instance.isCynical())?new Room(1,16):new Room(0,32);
 		current_room.Player = player;
 		PositionComponent p= player.getComponent(PositionComponent.class);
+		
+		if(Questionnaire.instance.isIndecisive()){
+			room_x = rand.nextInt(4);
+			room_y = rand.nextInt(4);
+		}
+		current_room.Load("rsc/"+dungeon_rooms[room_y][room_x]);
+		boolean found_door =false;
 		if(p== null)return;
 		Tile.TILE_TYPE door =Tile.TILE_TYPE.FLOOR;
 		if(d==DIRECTION.RIGHT){
@@ -53,13 +64,49 @@ public class Dungeon {
 				if(current_room.Level[i*current_room.Width+j].type==door){
 					p.x += j;//*current_room.TILE_SIZE;
 					p.y += i;//*current_room.TILE_SIZE;
+					p.past_x =i;
+					p.past_y = j;
+					p.MakeFuture();
+					found_door= true;
 				}
 			}
 		}
+		if(found_door == false){
+			p.x = 8;
+			p.y = 8;
+			p.past_x =8;
+			p.past_y = 8;
+			p.MakeFuture();
+		}
 	}
 	
+	public void Set_Room(int x,int y){
+		Entity player = current_room.Player;
+		Random rand = new Random();
+		current_room = (Questionnaire.instance.isCynical())?new Room(1,16):new Room(0,32);
+		current_room.Player = player;
+		PositionComponent p= player.getComponent(PositionComponent.class);
+		
+		room_x = x;
+		room_y = y;
+		
+		if(Questionnaire.instance.isIndecisive()){
+			room_x = rand.nextInt(4);
+			room_y = rand.nextInt(4);
+		}
+		current_room.Load("rsc/"+dungeon_rooms[room_y][room_x]);
+		
+		if(p== null)return;
+		p.x = 7;
+		p.y = 7;
+		p.past_x =7;
+		p.past_y = 7;
+		p.MakeFuture();
+	}
 	
 	public Dungeon(){
+
+		Room.directions= new Texture("rsc/directions.png");
 		Player.playerSprite = new Texture("rsc/player.png");
 		EnemySlime.slimeSprite = new Texture("rsc/slime.png");
 		EnemyBat.batSprite = new Texture("rsc/bat.png");
@@ -69,6 +116,7 @@ public class Dungeon {
 		
 		ItemSign.signSprite = new Texture("rsc/sign.png");
 		ItemChest.chestSprite = new Texture("rsc/chest.png");
+		ItemGameWin.gameWinSprite = new Texture("rsc/gameWin.png");
 		Tile.tex_DoorDown = new Texture("rsc/doorDown.png");
 		Tile.tex_DoorLeft = new Texture("rsc/doorLeft.png");
 		Tile.tex_DoorRight = new Texture("rsc/doorRight.png");
@@ -77,23 +125,26 @@ public class Dungeon {
 		Tile.tex_Floor0 = new Texture("rsc/floor0.png");
 		Tile.tex_Wall0 = new Texture("rsc/wall0.png");		
 		
-		room_x = 2;
-		room_y = 4;
-		
 		dungeon_rooms = new String[][]{
-			{"r11.txt"	,"r12.txt"	,""			,"r14.txt"	,""},
+			{"r11.txt"	,"r12.txt"	,"rq.txt"	,"r14.txt"	,"rq.txt"},
 			{"r6.txt"	,"r7.txt"	,"r8.txt"	,"r9.txt"	,"r10.txt"},
-			{""			,"r5.txt"	,"r3.txt"	,"r4.txt"	,""},
-			{""			,""			,"r2.txt"	,""			,""},
-			{""			,""			,"r1.txt"	,""			,""}
+			{"rq.txt"	,"r5.txt"	,"r3.txt"	,"r4.txt"	,"rq.txt"},
+			{"rq.txt"	,"rq.txt"	,"r2.txt"	,"rq.txt"	,"rv.txt"},
+			{"rq.txt"	,"rq.txt"	,"r1.txt"	,"rq.txt"	,"rB.txt"}
 		};
 	}
 	
-	public void LoadPostQuestionare(){
-		current_room = new Room(0,32);
+	public void LoadPostQuestionnaire(){
+		
+		current_room = (Questionnaire.instance.isCynical())?new Room(1,16):new Room(0,32);
 		current_room.Player = new Player(4,10);
+		room_x = 2;
+		room_y = 4;
 		current_room.Load("rsc/"+dungeon_rooms[room_y][room_x]);
-
+		UI.LogString("");
+		UI.LogString("");
+		UI.LogString("");
+		UI.LogString("");
 		/*change rules, dungeon rooms based on values.
 		 * 
 		 * */
@@ -178,14 +229,15 @@ public class Dungeon {
 		int cam_y=0;
 		PositionComponent p = current_room.Player.getComponent(PositionComponent.class);
 		if(p!= null){
-		cam_x =  (w/2) -current_room.TILE_SIZE*p.x;
-		cam_y =  (h/2) +current_room.TILE_SIZE*p.y;
+		cam_x =  (w/4);// -current_room.TILE_SIZE*p.x;
+		cam_y =  (h)-64;// +current_room.TILE_SIZE*p.y;
 		}
-		current_room.Draw(batch,cam_x,cam_y);
+		current_room.Draw(batch,cam_x,cam_y+64);
 		
 	}
 	
 	public void dispose(){
+		Room.directions.dispose();
 		EnemySlime.slimeSprite.dispose();
 		EnemyBat.batSprite.dispose();
 		EnemyRat.ratSprite.dispose();
@@ -194,6 +246,7 @@ public class Dungeon {
 		
 		ItemSign.signSprite.dispose();
 		ItemChest.chestSprite.dispose();
+		ItemGameWin.gameWinSprite.dispose();
 		
 		Tile.tex_DoorDown.dispose();
 		Tile.tex_DoorLeft.dispose();
