@@ -6,9 +6,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -32,7 +29,7 @@ public class Questionnaire {
 	public Section currentSection;
 
 	//Chat Stuff
-	public String[][] dialogueSecctions;
+	public String[][] dialogueSections;
 	int dialogueIndex;
 	public int dialogueSectionNumber;
 
@@ -76,17 +73,79 @@ public class Questionnaire {
 		listOfQuestions = generateQuestions(listOfTraits);
 		questionIndex = 0;
 		//Prepare for Chatting
-		dialogueSecctions = new String[2][];
-		dialogueSecctions[0] = new String[]{
-			"[Welcome: Please press enter to initilize program]",
-			"This is a test",
-			"This is more text",
-			"And this is even more"
+		dialogueSections = new String[9][];
+		dialogueSections[0] = new String[]{
+			"[Press enter to continue to final level]",
+			"Good, you can understand simple instructions",
+			"...",
+			"Who am I? Well I am the final boss, of course.",
+			"Your job is to beat me, to win the day, and to be the hero.",
+			"How do you do that?",
+			"¯\\_(ツ)_/¯",
+			"I don't see how you could do so",
+			"Probably wouldn’t even tell you even if I knew"
 		};
-		dialogueSecctions[1] = new String[]{
-			"Alright, let's see how your new game came out",
-			"This is more text",
-			"And Even More Text"
+		dialogueSections[1] = new String[]{
+			"...",
+			"But I guess I should do something interesting",
+			"Just so we have something to do",
+			"So tell you what",
+			"Complete a little game of mine, and I will let you through",
+			"You can chicken out and just close the window",
+			"but what would be the fun in that?",
+			"So ready? No take backsies."
+		};
+		dialogueSections[2] = new String[]{
+			"Good",
+			"So, here’s the challenge:" ,
+			"In a second, I will present you with a series of choices",
+			"Simply select the choice you more agree with",
+			"or choose you agree with both",
+			"or neither. That’s fine too",
+			"Also, please be honest.",
+			"I can’t stop you from lying",
+			"But the only person you would be lying to is yourself.",
+			"...",
+			"And besides",
+			"This will be more fun if you tell the truth..."
+		};
+		dialogueSections[4] = new String[]{
+			"I’m sure you see what I'm doing here",
+			"But I actually didn’t do anything",
+			"I didn’t have to",
+			"All I had to do was tell you what to see",
+			"What I wanted you to see",
+			"And then let yourself do all the work for me.",
+			"Because as you can see now",
+			"All I have to do",
+			"Is let you tear yourself down"
+		};
+		dialogueSections[5] = new String[]{
+			"And then you died.",
+			"Tragic, really.",
+			"But, you see, it doesn’t have to end like this",
+			"Because everything I told you earlier…",
+			"All of that you let mull in your head",
+			"Yea, I made that up on the spot",
+			"Really, everything I said applies to everyone, and no one",
+			"Like a terrible horoscope",
+			"But that doesn’t make those ideas less destructive."
+		};
+		dialogueSections[7] = new String[]{
+			"I can see this can feel a hoke.",
+			"That’s one way of looking at it.",
+			"But what if you looked again?",
+			"What do you see?"
+		};
+		dialogueSections[8] = new String[]{
+			"You win",
+			"...",
+			"...",
+			"A bit anticlimactic, don’t you think?",
+			"So how about we make our own ending?",
+			"One not made by a group of guys in a 48 hour game jam.",
+			"Instad, take a look around you",
+			"What do you see?"
 		};
 		dialogueIndex=1;
 		dialogueSectionNumber = 0;
@@ -112,13 +171,102 @@ public class Questionnaire {
 	}
 	private void renderChat(SpriteBatch batch){
 		for(int i=0;i<dialogueIndex;i++){
-			questionFont.draw(batch, dialogueSecctions[dialogueSectionNumber][i],X_BUFFER,(LINE_HEIGHT*(dialogueIndex-i))+BOTTOM_HEIGHT);
+			questionFont.draw(batch, dialogueSections[dialogueSectionNumber][i],X_BUFFER,(LINE_HEIGHT*(dialogueIndex-i))+BOTTOM_HEIGHT);
 		}
 	}
-
+	private void stuffArrays(int index7, int index4, String[] arr7, String[] arr4,
+							   String firstString7, String secondString7, String String4){
+		arr7[index7++] = firstString7;
+		arr7[index7++] = secondString7;
+		arr4[index4++] = String4;
+	}
 	public void Update(){
 		if(currentSection == Section.CALCULATING){
 			mutators=evaluateMutators(listOfQuestions);
+			boolean hasAnswer = false;
+			int answerCount = 0;
+			for(int i=0;i<mutators.length;i++){
+				if(mutators[i]){
+					answerCount++;
+				}
+			}
+			if(answerCount==0){
+
+			}
+			else{
+				String[] part4 = new String[answerCount+4];
+				int index4 = 0;
+				part4[index4++] = "Well, well.";
+				part4[index4++] = "This is interesting";
+				part4[index4++] = "Here’s what I see";
+				String[] part7 = new String[((answerCount*2)+2)];
+				int index7 = 0;
+				part7[index7++] = "Perhaps you agreed with some of the things I said";
+				part7[index7++] = "If that’s the case, then think about this";
+				if(mutators[0]){
+					stuffArrays(index7,index4,part7,part4,
+							"Maybe you are a cynic.",
+							"Or maybe you just want a better world.",
+							"A bit of a cynic, are we? See people for their basest desires?");
+				}
+				if(mutators[1]){
+					stuffArrays(index7,index4,part7,part4,
+							"Maybe you are just out there for the glory",
+							"Or maybe you just want to be the best you can be",
+							"A bit of a status seeker, I see? Stuck in the rat race?");
+				}
+				if(mutators[2]){
+					stuffArrays(index7,index4,part7,part4,
+							"Maybe you feel that if you try, you will fail, but who doesn’t?",
+							"And surely, a little extra faith in yourself could change everything",
+							"Someone who lacks faith in themselves");
+				}
+				if(mutators[3]){
+					stuffArrays(index7,index4,part7,part4,
+							"Maybe you think the world singles you out, but who doesn’t?",
+							"And surely you have the power to change that?",
+							"Someone who blames the unfair world");
+				}
+				if(mutators[4]){
+					stuffArrays(index7,index4,part7,part4,
+							"Sure, you might feel isolated from the world",
+							"Or maybe you feel more lonely than you really are",
+							"A very guarded individual");
+				}
+				if(mutators[5]){
+					stuffArrays(index7,index4,part7,part4,
+							"Sure, it might feel the world will leave you behind",
+							"Or maybe you feel more abandoned than you really are",
+							"A very clingy individual");
+				}
+				if(mutators[6]){
+					stuffArrays(index7,index4,part7,part4,
+							"Sometimes you reminisce too much.",
+							"But every great story is built on what came before.",
+							"Stuck in the past");
+				}
+				if(mutators[7]){
+					stuffArrays(index7,index4,part7,part4,
+							"Sometimes you daydream too much",
+							"But every great story starts with a dream",
+							"Stuck daydreaming");
+				}
+				if(mutators[8]){
+					stuffArrays(index7,index4,part7,part4,
+							"And finally, maybe you feel stuck",
+							"But that just means there is opportunity you have failed to see",
+							"And worst of all, there’s just not a lot of options out there");
+				}
+				if(mutators[9]){
+					stuffArrays(index7,index4,part7,part4,
+							"And finally, maybe you feel overwhelmed",
+							"But that just means you have been thoughtful about your choices.",
+							"And worst of all, there’s just too many options out there");
+				}
+				part4[index4++] = "What do you see?";
+				dialogueSections[3] = part4;
+				dialogueSections[6] = part7;
+			}
 			currentSection = Section.CHATTING;
 		}
 		/*Update code goes here.*/
@@ -148,15 +296,32 @@ public class Questionnaire {
 		}
 		else if(currentSection == Section.CHATTING && Gdx.input.isKeyJustPressed(Input.Keys.ENTER)){
 			dialogueIndex++;
-			if(dialogueIndex>dialogueSecctions[dialogueSectionNumber].length){
+			if(dialogueIndex> dialogueSections[dialogueSectionNumber].length){
 				dialogueIndex = 1;
 				dialogueSectionNumber++;
-				if(dialogueSectionNumber==1){
-					currentSection = Section.QUESTIONING;
+				switch (dialogueSectionNumber){
+					case 4:
+					case 5:
+					case 8:
+					case 9:
+						currentSection= Section.DONE;
+					case 3:
+						currentSection = Section.QUESTIONING;
+						break;
+					case 1:
+					case 2:
+					case 6:
+					case 7:
+					default:
+						break;
 				}
 				if(dialogueSectionNumber==2){
+
+				}
+				if(dialogueSectionNumber==4 ||
+					dialogueSectionNumber==5 ||
+						dialogueSectionNumber==6){
 					currentSection = Section.DONE;
-					System.out.println(Arrays.toString(mutators));
 				}
 			}
 		}
